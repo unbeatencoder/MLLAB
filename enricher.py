@@ -7,9 +7,8 @@ from keras.models import Sequential # Documentation: https://keras.io/models/seq
 # Setup train and test splits
 from phe import paillier
 
-def ML(x_train,y_train,given_weights):
-    print('ML called....')
-
+def enrich(x_train,y_train,given_weights,pub_key,priv_key):
+    print('Enricher called....')
     image_size = 784 # 28*28
     num_classes = 10 # ten unique digits
     model = Sequential()
@@ -25,18 +24,21 @@ def ML(x_train,y_train,given_weights):
     enc_values = []
     for j in range(784):
         for k in range(32):
-            enc_values.append(float(weights[0][j][k]))
+            __temp = pub_key.encrypt(float(weights[0][j][k]))
+            enc_values.append((str(__temp.ciphertext()),__temp.exponent))
     j=0
     for j in range(32):
-            enc_values.append(float(weights[1][j]))
+            __temp = pub_key.encrypt(float(weights[1][j]))
+            enc_values.append((str(__temp.ciphertext()),__temp.exponent))
 
     j=k=0
     for j in range(32):
         for k in range(10):
-            enc_values.append(float(weights[2][j][k]))
+            __temp = pub_key.encrypt(float(weights[2][j][k]))
+            enc_values.append((str(__temp.ciphertext()),__temp.exponent))
     j=0
     for j in range(10):
-            enc_values.append(float(weights[3][j]))
-            
+            __temp = pub_key.encrypt(float(weights[3][j]))
+            enc_values.append( (str(__temp.ciphertext()),__temp.exponent))
     print('sending encrypted gradients')
     return enc_values

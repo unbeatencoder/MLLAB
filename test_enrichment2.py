@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.layers import Dense # Dense layers are "fully connected" layers
 from keras.models import Sequential # Documentation: https://keras.io/models/sequential/
-from encryptedneuralnetwork import ML
+from test_enrichment import ML
 from phe import paillier
+from enricher import enrich
 #<------------------------------------Self Training-------------------------------->
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 pub_key,priv_key = paillier.generate_paillier_keypair()
@@ -32,13 +33,14 @@ print(f'Test loss: {loss1:.3}')
 print(f'Test accuracy: {accuracy1:.3}')
 
 
-datalevels = [0,10000,20000,35000,50000,60000]
+datalevels = [0,10000,20000,35000,40000,60000]
 listofweights = []
-for iterations in range(10):
+no_of_iterations = 5
+for iterations in range(no_of_iterations):
     listofweights.clear()
-    for i in range(5):
+    for i in range(4):
         print('calling', i)
-        weights_new = ML(x_train[datalevels[i]:datalevels[i+1],:],y_train[datalevels[i]:datalevels[i+1],:],weights_old,pub_key,priv_key) 
+        weights_new = ML(x_train[datalevels[i]:datalevels[i+1],:],y_train[datalevels[i]:datalevels[i+1],:],weights_old) 
         print('encrypted weights received')
         listofweights.append(weights_new)
     count=0
@@ -46,51 +48,41 @@ for iterations in range(10):
     print('averaging weights....')
     for j in range(784):
         for k in range(32):
-            temp0 = paillier.EncryptedNumber(pub_key,int(listofweights[0][count][0]),int(listofweights[0][count][1]))
-            temp1 = paillier.EncryptedNumber(pub_key,int(listofweights[1][count][0]),int(listofweights[1][count][1]))
-            temp2 = paillier.EncryptedNumber(pub_key,int(listofweights[2][count][0]),int(listofweights[2][count][1]))
-            temp3 = paillier.EncryptedNumber(pub_key,int(listofweights[3][count][0]),int(listofweights[3][count][1]))
-            temp4 = paillier.EncryptedNumber(pub_key,int(listofweights[4][count][0]),int(listofweights[4][count][1]))
-            temp5 = temp0.__add__(temp1).__add__(temp2).__add__(temp3).__add__(temp4)
-
+            temp0 = listofweights[0][count]
+            temp1 = listofweights[1][count]
+            temp2 = listofweights[2][count]
+            temp3 = listofweights[3][count]
+            temp4 = temp0+ temp1+temp2+temp3
             count = count + 1
-            weights_old[0][j][k] = priv_key.decrypt(temp5)
-            weights_old[0][j][k] = weights_old[0][j][k]/5
+            weights_old[0][j][k] = temp4/5
     j=0
     for j in range(32):
-            temp0 = paillier.EncryptedNumber(pub_key,int(listofweights[0][count][0]),int(listofweights[0][count][1]))
-            temp1 = paillier.EncryptedNumber(pub_key,int(listofweights[1][count][0]),int(listofweights[1][count][1]))
-            temp2 = paillier.EncryptedNumber(pub_key,int(listofweights[2][count][0]),int(listofweights[2][count][1]))
-            temp3 = paillier.EncryptedNumber(pub_key,int(listofweights[3][count][0]),int(listofweights[3][count][1]))
-            temp4 = paillier.EncryptedNumber(pub_key,int(listofweights[4][count][0]),int(listofweights[4][count][1]))
-            temp5 = temp0.__add__(temp1).__add__(temp2).__add__(temp3).__add__(temp4)
+            temp0 = listofweights[0][count]
+            temp1 = listofweights[1][count]
+            temp2 = listofweights[2][count]
+            temp3 = listofweights[3][count]
+            temp4 = temp0+ temp1+temp2+temp3
             count = count + 1
-            weights_old[1][j] = priv_key.decrypt(temp5)
-            weights_old[1][j] = weights_old[1][j]/5
+            weights_old[1][j] = temp4/5
     j=k=0
     for j in range(32):
         for k in range(10):
-            temp0 = paillier.EncryptedNumber(pub_key,int(listofweights[0][count][0]),int(listofweights[0][count][1]))
-            temp1 = paillier.EncryptedNumber(pub_key,int(listofweights[1][count][0]),int(listofweights[1][count][1]))
-            temp2 = paillier.EncryptedNumber(pub_key,int(listofweights[2][count][0]),int(listofweights[2][count][1]))
-            temp3 = paillier.EncryptedNumber(pub_key,int(listofweights[3][count][0]),int(listofweights[3][count][1]))
-            temp4 = paillier.EncryptedNumber(pub_key,int(listofweights[4][count][0]),int(listofweights[4][count][1]))
-            temp5 = temp0.__add__(temp1).__add__(temp2).__add__(temp3).__add__(temp4)
+            temp0 = listofweights[0][count]
+            temp1 = listofweights[1][count]
+            temp2 = listofweights[2][count]
+            temp3 = listofweights[3][count]
+            temp4 = temp0+ temp1+temp2+temp3
             count = count + 1
-            weights_old[2][j][k] = priv_key.decrypt(temp5)
-            weights_old[2][j][k] = weights_old[2][j][k]/5
+            weights_old[2][j][k] = temp4/5
     j=0
     for j in range(10):
-            temp0 = paillier.EncryptedNumber(pub_key,int(listofweights[0][count][0]),int(listofweights[0][count][1]))
-            temp1 = paillier.EncryptedNumber(pub_key,int(listofweights[1][count][0]),int(listofweights[1][count][1]))
-            temp2 = paillier.EncryptedNumber(pub_key,int(listofweights[2][count][0]),int(listofweights[2][count][1]))
-            temp3 = paillier.EncryptedNumber(pub_key,int(listofweights[3][count][0]),int(listofweights[3][count][1]))
-            temp4 = paillier.EncryptedNumber(pub_key,int(listofweights[4][count][0]),int(listofweights[4][count][1]))
-            temp5 = temp0.__add__(temp1).__add__(temp2).__add__(temp3).__add__(temp4)
+            temp0 = listofweights[0][count]
+            temp1 = listofweights[1][count]
+            temp2 = listofweights[2][count]
+            temp3 = listofweights[3][count]
+            temp4 = temp0+ temp1+temp2+temp3
             count = count + 1
-            weights_old[3][j] = priv_key.decrypt(temp5)
-            weights_old[3][j] = weights_old[3][j]/5
-
+            weights_old[3][j] = temp4/5
     print('testing average model')
     model2 = Sequential()
     model2.add(Dense(units=32, activation='sigmoid', input_shape=(image_size,)))
@@ -100,3 +92,73 @@ for iterations in range(10):
     loss2, accuracy2  = model2.evaluate(x_test, y_test, verbose=False)
     print(iterations)
     print(f'Test accuracy: {accuracy2:.3}')
+
+pub_key,priv_key = paillier.generate_paillier_keypair() 
+enc_values = []
+for j in range(784):
+    for k in range(32):
+        __temp = pub_key.encrypt(float(weights_old[0][j][k]))
+        enc_values.append((str(__temp.ciphertext()),__temp.exponent))
+j=0
+for j in range(32):
+        __temp = pub_key.encrypt(float(weights_old[1][j]))
+        enc_values.append((str(__temp.ciphertext()),__temp.exponent))
+j=k=0
+for j in range(32):
+    for k in range(10):
+        __temp = pub_key.encrypt(float(weights_old[2][j][k]))
+        enc_values.append((str(__temp.ciphertext()),__temp.exponent))
+j=0
+for j in range(10):
+        __temp = pub_key.encrypt(float(weights_old[3][j]))
+        enc_values.append((str(__temp.ciphertext()),__temp.exponent))
+#<----------------------------------------------------------------------Enrichment Code Begins ---------------------------------------------------------------------------------->
+enrichment_weights = enrich(x_train[datalevels[4]:datalevels[5],:],y_train[datalevels[4]:datalevels[5],:],weights_old,pub_key,priv_key)
+count = 0 
+for j in range(784):
+    for k in range(32):
+        temp0 = paillier.EncryptedNumber(pub_key,int(enc_values[count][0]),int(enc_values[count][1]))
+        temp1 = paillier.EncryptedNumber(pub_key,int(enrichment_weights[count][0]),int(enrichment_weights[count][1]))
+        temp2 = temp0.__add__(temp0).__add__(temp0).__add__(temp0).__add__(temp1)
+        count = count + 1
+        weights_old[0][j][k] = priv_key.decrypt(temp2)
+        weights_old[0][j][k] = weights_old[0][j][k]/5
+j=0
+for j in range(32):
+        temp0 = paillier.EncryptedNumber(pub_key,int(enc_values[count][0]),int(enc_values[count][1]))
+        temp1 = paillier.EncryptedNumber(pub_key,int(enrichment_weights[count][0]),int(enrichment_weights[count][1]))
+        temp2 = temp0.__add__(temp0).__add__(temp0).__add__(temp0).__add__(temp1)
+        count = count + 1
+        weights_old[1][j] = priv_key.decrypt(temp2)
+        weights_old[1][j] = weights_old[1][j]/5
+j=k=0
+for j in range(32):
+    for k in range(10):
+        temp0 = paillier.EncryptedNumber(pub_key,int(enc_values[count][0]),int(enc_values[count][1]))
+        temp1 = paillier.EncryptedNumber(pub_key,int(enrichment_weights[count][0]),int(enrichment_weights[count][1]))
+        temp2 = temp0.__add__(temp0).__add__(temp0).__add__(temp0).__add__(temp1)
+        count = count + 1
+        weights_old[2][j][k] = priv_key.decrypt(temp2)
+        weights_old[2][j][k] = weights_old[2][j][k]/5
+j=0
+for j in range(10):
+        temp0 = paillier.EncryptedNumber(pub_key,int(enc_values[count][0]),int(enc_values[count][1]))
+        temp1 = paillier.EncryptedNumber(pub_key,int(enrichment_weights[count][0]),int(enrichment_weights[count][1]))
+        temp2 = temp0.__add__(temp0).__add__(temp0).__add__(temp0).__add__(temp1)
+        count = count + 1
+        weights_old[3][j] = priv_key.decrypt(temp2)
+        weights_old[3][j] = weights_old[3][j]/5
+
+print('testing average model')
+model2 = Sequential()
+model2.add(Dense(units=32, activation='sigmoid', input_shape=(image_size,)))
+model2.add(Dense(units=num_classes, activation='softmax'))
+model2.set_weights(weights_old)
+model2.compile(optimizer="sgd", loss='categorical_crossentropy', metrics=['accuracy'])
+loss2, accuracy2  = model2.evaluate(x_test, y_test, verbose=False)
+print(iterations)
+print(f'Test accuracy: {accuracy2:.3}')
+
+
+
+j=k=0
