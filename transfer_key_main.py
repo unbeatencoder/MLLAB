@@ -14,10 +14,11 @@ for i in range(n):
     enc_old.append((str(__temp.ciphertext()),__temp.exponent))
 print(old)
 
-enc_new = transferKey(enc_old, pub_key_old,pub_key_new,n)
+enc_new = transferKey(enc_old, pub_key_old,pub_key_new,n,priv_key_old)
 new = []
 for i in range(10):
-    __temp = paillier.EncryptedNumber(pub_key_new,int(enc_new[0]),int(enc_new[1]))
-    new.append(priv_key_new.decrypt(__temp))
+    __temp = paillier.EncryptedNumber(pub_key_new,int(enc_new[i][0]),int(enc_new[i][1]))
+    __decrypted = priv_key_new.decrypt(__temp)
+    new.append(__decrypted)
 
 print(new)
