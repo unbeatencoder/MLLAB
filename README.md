@@ -67,6 +67,7 @@ I have tried to capture the aggregation of the Gradients on the Blockchain in th
                  B. GradientPerIterationValue : This is an asset which is created by the participant after each iteration of the training. This contains an array of encrypted gradients.
                  C. AggregateGradientsOutput : This is an asset which will be output of the Aggregate function which essentially means the global values of the model after aggregation of individual contribution by the parties.
     ==> Smart Contract : aggregateGradientsTransactionFunction : This function takes into input the GradientPerIterationValue which are submitted by the Participants. Although, it's a dummy function right now which encrypts 2 numbers, add them and decrypt them. After that, it publishes the result as AggregateGradientsOutput. If given values in input, it will add them and then store them as AggregatGradientsOutput.
+3. logic.js : Contains logic for transaction aggregateGradientsTransactionFunction
 
 
 ===> This Blockchain prototype is very trivial compared to what we want to achieve. This is just the demonstration of the fact that our idea works and it is possible to achieve what we want as soon as we have a library which allows encrypted neural network training and testing in the native languages like Python, Java, etc. as well as the languages that Blockchain supports like Solidity for Ethereum or JavaScript for Hyperledger. However, JS is known to have it's problems with Big Integers so it might create a problem.
