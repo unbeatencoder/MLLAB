@@ -1,4 +1,4 @@
-#This file contains code for sigmoid function
+#This file contains code for sigmoid function.
 import numpy as np 
 def sig(z):
     """

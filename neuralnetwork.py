@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 from keras.datasets import mnist
 from keras.layers import Dense # Dense layers are "fully connected" layers
 from keras.models import Sequential # Documentation: https://keras.io/models/sequential/
+
+
+
+#This program trains neural network normally using keras library.
 # Setup train and test splits
 def ML(x_train,y_train,given_weights):
     # (x_train, y_train), (x_test, y_test) = mnist.load_data()

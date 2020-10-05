@@ -1,13 +1,19 @@
 from phe import paillier
 import json
+#This program tests whether addition done in encrypted domain works properly.
 
+
+#Generate a pair of keys.
 pub_key,priv_key = paillier.generate_paillier_keypair()
 
+#4 weights.
 weights4 = 10.1
 weights1 = 20.2
 weights2 = 30.3
 weights3 = 40.4
 encrypted = []
+
+#Encrypt them.
 tempx = pub_key.encrypt(weights4)
 encrypted.append((str(tempx.ciphertext()),tempx.exponent))
 tempx2 = paillier.EncryptedNumber(pub_key,int(encrypted[0][0]),int(encrypted[0][1]))
@@ -27,25 +33,8 @@ __temp32 = paillier.EncryptedNumber(pub_key,int(__temp03[0]),int(__temp03[1]))
 
 
 
-
+#Add values in encrypted domain.
 __temp5 = __temp22.__add__(__temp32).__add__(__temp12)
 __temp5 = __temp5.__add__(tempx2)
-
+#Print the summation of values.
 print(priv_key.decrypt(__temp5))
-
-import keyword
-print(keyword.kwlist)
-
-
-
-# print(priv_key.decrypt(weights))
-# enc_with_pub_key = {}
-# enc_with_pub_key['public_key'] = { 'g':pub_key.g, 'n':pub_key.n}
-# enc_with_pub_key['enc_value'] = (str(weights.ciphertext()),weights.exponent)
-# serialised = json.dumps(enc_with_pub_key)
-# print(serialised)
-# received_dict = json.loads(serialised)
-# pk = received_dict['public_key']
-# public_key_rec = paillier.PaillierPublicKey(n=int(pk['n']))
-# enc_nums_rec = paillier.EncryptedNumber(public_key_rec, int(received_dict['enc_value'][0]), int(received_dict['enc_value'][1]))
-# print(priv_key.decrypt(enc_nums_rec))

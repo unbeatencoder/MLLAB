@@ -5,6 +5,7 @@ from keras.layers import Dense # Dense layers are "fully connected" layers
 from keras.models import Sequential # Documentation: https://keras.io/models/sequential/
 from neuralnetwork import ML
 
+#Training and Testing between multiple parties in decrypted domain. Kind of Simulation for the federated learning.
 #<------------------------------------Self Training-------------------------------->
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
